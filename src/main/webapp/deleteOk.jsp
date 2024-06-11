@@ -5,18 +5,17 @@
 <html>
 <head>
 <meta charset="UTF-8">
-<title>sign up validation</title>
+<title>Delete Member Page</title>
 </head>
 <body>
 	<%
 		request.setCharacterEncoding("utf-8");
 	
-		String mname = request.getParameter("memberName");
-		String memail = request.getParameter("memberEmail");
+		String mnum = request.getParameter("memberNum");
 		
-		String sql = "INSERT member_tbl(member_name, member_email) VALUES('"+mname+"', '"+memail+"')";
-		
-		String driverName = "com.mysql.cj.jdbc.Driver";
+		String sql = "DELETE FROM member_tbl WHERE member_num = " + mnum;
+
+		String driverName = "com.mysql.jdbc.Driver";
 		String url = "jdbc:mysql://localhost:3306/member_db";
 		String username = "root";
 		String password = "12345";
@@ -30,9 +29,9 @@
 			stmt = conn.createStatement();
 			int success = stmt.executeUpdate(sql);  // sql문 실행 -> 1 반환되면 실행 성공
 			if (success == 1) {
-				out.println(mname + ", your sign up process completed!");
+				out.println("Your account was deleted!");
 			} else {
-				out.println("Sign up failed");
+				out.println("We failed to delete your account");
 			}
 		} catch (Exception e) {
 			out.println("DB connection Error!");

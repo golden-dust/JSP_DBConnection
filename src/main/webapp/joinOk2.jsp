@@ -14,7 +14,8 @@
 		String mname = request.getParameter("memberName");
 		String memail = request.getParameter("memberEmail");
 		
-		String sql = "INSERT member_tbl(member_name, member_email) VALUES('"+mname+"', '"+memail+"')";
+		//String sql = "INSERT member_tbl(member_name, member_email) VALUES('"+mname+"', '"+memail+"')";
+		String sql = "INSERT member_tbl(member_name, member_email) VALUES(?, ?)";
 		
 		String driverName = "com.mysql.cj.jdbc.Driver";
 		String url = "jdbc:mysql://localhost:3306/member_db";
@@ -22,13 +23,19 @@
 		String password = "12345";
 		
 		Connection conn = null;
-		Statement stmt = null;
+		//Statement stmt = null;
+		PreparedStatement pstmt = null;
 		
 		try {
 			Class.forName(driverName);  // jdbc 드라이버 불러오기
 			conn = DriverManager.getConnection(url, username, password);  // DB 연동 커넥션 생성
-			stmt = conn.createStatement();
-			int success = stmt.executeUpdate(sql);  // sql문 실행 -> 1 반환되면 실행 성공
+			//stmt = conn.createStatement();
+			pstmt = conn.prepareStatement(sql);
+			
+			pstmt.setString(1, mname);
+			pstmt.setString(2, memail);
+			
+			int success = pstmt.executeUpdate();  // sql문 실행 -> 1 반환되면 실행 성공
 			if (success == 1) {
 				out.println(mname + ", your sign up process completed!");
 			} else {
@@ -39,8 +46,8 @@
 			e.printStackTrace();
 		} finally {
 			try {
-				if(stmt != null) {
-					stmt.close();
+				if(pstmt != null) {
+					pstmt.close();
 				}
 				if (conn != null) {
 					conn.close();
